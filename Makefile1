@@ -1,0 +1,11 @@
+CC = gcc
+
+CFLAGS= -I. -Wall -s -lrt
+LOCAL_SRCS = timer_stack.c
+
+all: timer_stack
+timer_stack: 
+	$(CC) -o $@ $(LOCAL_SRCS) $(CFLAGS)
+
+clean:
+	rm -f *.o timer_stack
