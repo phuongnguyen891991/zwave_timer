@@ -1,7 +1,4 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <signal.h>
+
 #include <time.h>
 
  
@@ -10,7 +7,11 @@
 #ifndef TIMER_START
 #define TIMER_START
 
- int timer_start(timer_t *timerid, struct sigevent sev, struct itimerspec its);
+ int timer_start(timer_t timerid, struct sigevent sev, struct itimerspec its,int i);
+ timer_t setting_timer_count(const char *str,  timer_t *timerid);
+ int block_and_create_timer(struct sigaction sa, sigset_t mask);
+ void print_siginfo(siginfo_t *si);
+ void handler(int sig, siginfo_t *si, void *uc);
 
 
 #endif
