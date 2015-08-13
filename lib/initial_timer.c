@@ -5,14 +5,9 @@
 #include <signal.h>
 #include <time.h>
 
-
 #include "initial_timer.h"
 #include "currTime.h"
-//#include "print_timer.h"
-//#define errExit(msg)  do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-//struct sigevent sev;
-//struct itimerspec its;
 #define errExit(msg)  do { perror(msg); exit(EXIT_FAILURE); } while (0)
 #define CLOCKID CLOCK_REALTIME
 #define SIG SIGRTMIN
@@ -24,10 +19,10 @@ struct sigaction sa;
 
  int timer_start(timer_t timerid, struct sigevent sev,struct itimerspec its,int i)
  {
-  //printf("timer Create \n");
+  
   int check_timer_create;
 	check_timer_create = timer_create(CLOCKID, &sev, &timerid);
-  //printf("timer Create \n");
+
   if(check_timer_create == -1)
         {
        	perror("timer_create");
@@ -42,8 +37,7 @@ struct sigaction sa;
         perror("timer_settime");
         }
 
-       // printf("Create success \n");
-        return 0;
+        return 1;
  }
 
 void print_siginfo(siginfo_t *si)
@@ -53,8 +47,8 @@ void print_siginfo(siginfo_t *si)
 
    tidp = si->si_value.sival_ptr;
 
-   printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
-   printf("    *sival_ptr = 0x%lx\n", (long)tidp);
+   //printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
+   printf("    *sival_ptr = 0x%lx\n", (long)*tidp);
 
    or = timer_getoverrun(tidp);
    if (or == -1)
@@ -71,7 +65,6 @@ void handler(int sig, siginfo_t *si, void *uc)
 
    printf("[%s]Caught signal %d\n",currTime("%T"),sig);
    print_siginfo(si);
-   //signal(SIGRTMIN, SIG_IGN);
 }  
 
 int block_and_create_timer(struct sigaction sa, sigset_t mask)
