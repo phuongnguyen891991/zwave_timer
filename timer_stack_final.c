@@ -10,24 +10,21 @@
 
 #define errExit(msg)  do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-
 #include "lib/currTime.h"
 #include "lib/initial_timer.h"
 #include "lib/print_timer.h"
 
-
-
-
-int 
-main(int argc, char *argv[])
-{
-	timer_t *timerid;
+   timer_t *timerid;
    struct sigevent sev;
    struct itimerspec its;
    //long long freq_nanosecs;
    sigset_t mask;
    struct sigaction sa;
    int i;
+
+int main(int argc, char *argv[])
+{
+	
 
 	if (argc < 2 ) 
 	{
@@ -66,20 +63,23 @@ main(int argc, char *argv[])
 
    for(i=1;i<argc;i++)
    {
+   	//printf("argc %d \n",argc);
    its.it_value.tv_sec = atoi(argv[i]);
    its.it_value.tv_nsec = 0;
    its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
    its.it_interval.tv_nsec = 0;
 
    	sev.sigev_value.sival_ptr=&timerid[i];
-   	if(timer_start(timerid,sev,its) == -1)
+
+   	if(timer_start(&timerid[i],sev,its) == -1)
    	{
    		perror("can not Create");
    	}
+
    }
    while(1)
    {
-   	pause();
+   	//pause();
    }
    return 0;
 }
