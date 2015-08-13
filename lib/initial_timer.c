@@ -16,13 +16,14 @@
  int timer_start(timer_t *timerid, struct sigevent sev,struct itimerspec its)
  {
   int check_timer_create;
-	check_timer_create = timer_create(CLOCK_REALTIME, &sev, &timerid);
+	check_timer_create = timer_create(CLOCK_REALTIME, &sev, timerid);
+
   if(check_timer_create == -1)
         {
        	perror("timer_create");
         }
 
-   	printf("timer ID is 0x%lx\n", (long) timerid);
+   	printf("timer ID is 0x%lx\n", (long) *timerid);
 
    /* Start the timer */
 

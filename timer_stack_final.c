@@ -14,7 +14,7 @@
 #include "lib/initial_timer.h"
 #include "lib/print_timer.h"
 
-   timer_t *timerid;
+   timer_t *timerid, *timerid_tmp;
    struct sigevent sev;
    struct itimerspec its;
    //long long freq_nanosecs;
@@ -69,9 +69,10 @@ int main(int argc, char *argv[])
    its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
    its.it_interval.tv_nsec = 0;
 
-   	sev.sigev_value.sival_ptr=&timerid[i];
+   	sev.sigev_value.sival_ptr = &timerid[i];
+   	timerid_tmp = &timerid[i];
 
-   	if(timer_start(&timerid[i],sev,its) == -1)
+   	if(timer_start(timerid_tmp,sev,its) == -1)
    	{
    		perror("can not Create");
    	}

@@ -7,6 +7,9 @@
 #include <time.h>
 
 #include "print_timer.h"
+#include "currTime.h"
+
+//timer_t *tidp;
 
 void print_siginfo(siginfo_t *si)
 {
@@ -16,9 +19,9 @@ void print_siginfo(siginfo_t *si)
    tidp = si->si_value.sival_ptr;
 
    printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
-   printf("    *sival_ptr = 0x%lx\n", (long)*tidp);
+   printf("    *sival_ptr = 0x%lx\n", (long)tidp);
 
-   or = timer_getoverrun(*tidp);
+   or = timer_getoverrun(tidp);
    if (or == -1)
        perror("timer_getoverrun");
    else
@@ -33,5 +36,5 @@ void handler(int sig, siginfo_t *si, void *uc)
 
    printf("[%s]Caught signal %d\n",currTime("%T"),sig);
    print_siginfo(si);
-  // signl(SIG, SIG_DFL);
+   signal(SIGRTMIN, SIG_DFL);
 }   
