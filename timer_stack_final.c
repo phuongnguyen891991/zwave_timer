@@ -35,6 +35,8 @@ int main(int argc, char *argv[])
 
    timerid = calloc(argc-1,sizeof(timer_t));
    timerid_tmp = timerid;
+   //free(timerid);
+   //free(timerid_tmp);
 
    if(timerid == NULL)
    {
@@ -52,7 +54,7 @@ int main(int argc, char *argv[])
    {
     timerid_tmp[i] = setting_timer_count(argv[i],timerid[i]);
    	
-   	if(timer_start(timerid_tmp[i],sev,its,i) == -1)
+   	if(timer_start(timerid_tmp[i],sev,its,i) == (timer_t)-1)
    	{
    		perror("can not Create");
    	}
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
    {
    	pause();
    }
-   
+   free(timerid_tmp);
    return 0;
 }
 

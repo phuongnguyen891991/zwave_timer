@@ -17,7 +17,7 @@ struct itimerspec its;
 sigset_t mask;
 struct sigaction sa;
 
- int timer_start(timer_t timerid, struct sigevent sev,struct itimerspec its,int i)
+ timer_t timer_start(timer_t timerid, struct sigevent sev,struct itimerspec its,int i)
  {
   
   int check_timer_create;
@@ -37,17 +37,17 @@ struct sigaction sa;
         perror("timer_settime");
         }
 
-        return 1;
+        return timerid;
  }
 
 void print_siginfo(siginfo_t *si)
 {
-   timer_t *tidp;
+   timer_t * tidp;
    int or;
 
    tidp = si->si_value.sival_ptr;
 
-   //printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
+   printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
    printf("    *sival_ptr = 0x%lx\n", (long)*tidp);
 
    or = timer_getoverrun(tidp);
@@ -97,10 +97,8 @@ int block_and_create_timer(struct sigaction sa, sigset_t mask)
    timer_t *timerid_ret;
    dupstr = strdup(str);
    timerid_ret = timerid;
-
    
    its.it_value.tv_sec = atoi(dupstr);
-   //printf("dupstr : %s \n",dupstr);
    its.it_value.tv_nsec = 0;
    its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
    its.it_interval.tv_nsec = 0;
@@ -108,6 +106,6 @@ int block_and_create_timer(struct sigaction sa, sigset_t mask)
    sev.sigev_value.sival_ptr = &timerid_ret;
    //timerid_tmp = &timerid[i];
 
-   //free(dupstr);
+   free(dupstr);
    return timerid_ret;
 }
