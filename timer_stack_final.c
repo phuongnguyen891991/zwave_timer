@@ -61,12 +61,11 @@ int main(int argc, char *argv[])
    	}
 
    }
-   free(timerid_tmp);
    for(;;)
    {
    	pause();
    }
-   
+   free(timerid);
    return 0;
 }
 
