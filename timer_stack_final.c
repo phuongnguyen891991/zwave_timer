@@ -15,57 +15,30 @@
 #include "lib/initial_timer.h"
 
 
-   timer_t *timerid, *timerid_tmp;
-   struct sigevent sev;
-   struct itimerspec its;
-   sigset_t mask;
-   struct sigaction sa;
-   int i;
+  //timer_t *timerid, *timerid_tmp;
+   //struct sigevent sev;
+   //struct itimerspec its;
+void handler_func(int sig, siginfo_t *si, void *uc)
+{
+  timer_t * tidptr;
+  tidptr=si->si_value.sival_ptr;
+  printf("[%s] Caught signal %d\n",currTime("%T"),sig);
+  printf("*sigval_ptr         =0x%lxd\n",(long)*tidptr);
+  printf(" timer_getoverrun() =%d\n",timer_getoverrun(*tidptr));
 
+}
 
 int main(int argc, char *argv[])
 {
 
-	if (argc < 2 ) 
-	{
-       fprintf(stderr, "Usage: %s <int-secs> <int-secs>...\n",
-               argv[0]);
-       exit(EXIT_FAILURE);
-    }
+timer_t *timerid ;
+//int time_count ;
+int loop =1;
+timerid = calloc(argc-1,sizeof(timer_t));
+void (*handler_tmp) = handler_func;
 
-   timerid = calloc(argc-1,sizeof(timer_t));
+timer(timerid,handler_tmp,argc,argv,loop);
 
-   if(timerid == NULL)
-   {
-		errExit("timerid NULL");
-   }
-   timerid_tmp = timerid;
 
-   printf("Establishing handler for signal %d\n", SIG);
-
-   if(block_and_create_timer(sa,mask) == -1)
-   {
-    perror("Error Create \n");
-   }
-
-   for(i = 1;i < argc;i++)
-   {
-    if(setting_timer_count(argv[i],timerid,i) == -1)
-    	{
-    		perror("Error setting \n");
-    	}
-   	
-   	if(timer_start(timerid,sev,its,i) == -1)
-   	{
-   		perror("can not Create");
-   	}
-
-   }
-   for(;;)
-   {
-   	pause();
-   }
-   free(timerid);
-   return 0;
+return 0;
 }
-
