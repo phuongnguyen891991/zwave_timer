@@ -34,14 +34,12 @@ int main(int argc, char *argv[])
     }
 
    timerid = calloc(argc-1,sizeof(timer_t));
-   timerid_tmp = timerid;
-   //free(timerid);
-   //free(timerid_tmp);
 
    if(timerid == NULL)
    {
 		errExit("timerid NULL");
    }
+   timerid_tmp = timerid;
 
    printf("Establishing handler for signal %d\n", SIG);
 
@@ -52,19 +50,23 @@ int main(int argc, char *argv[])
 
    for(i = 1;i < argc;i++)
    {
-    timerid_tmp[i] = setting_timer_count(argv[i],timerid[i]);
+    if(setting_timer_count(argv[i],timerid,i) == -1)
+    	{
+    		perror("Error setting \n");
+    	}
    	
-   	if(timer_start(timerid_tmp[i],sev,its,i) == (timer_t)-1)
+   	if(timer_start(timerid,sev,its,i) == -1)
    	{
    		perror("can not Create");
    	}
 
    }
+   free(timerid_tmp);
    for(;;)
    {
    	pause();
    }
-   free(timerid_tmp);
+   
    return 0;
 }
 

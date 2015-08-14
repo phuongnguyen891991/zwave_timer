@@ -17,32 +17,32 @@ struct itimerspec its;
 sigset_t mask;
 struct sigaction sa;
 
- timer_t timer_start(timer_t timerid, struct sigevent sev,struct itimerspec its,int i)
+ int timer_start(timer_t *timerid, struct sigevent sev,struct itimerspec its,int i)
  {
   
   int check_timer_create;
-	check_timer_create = timer_create(CLOCKID, &sev, &timerid);
+	check_timer_create = timer_create(CLOCKID, &sev, &timerid[i]);
 
   if(check_timer_create == -1)
         {
        	perror("timer_create");
         }
 
-   	printf("timer ID is 0x%lx (%d) \n", (long)timerid,i);
+   	printf("timer ID is 0x%lx (%d) \n", (long)timerid[i],i);
 
    /* Start the timer */
 
-   	if (timer_settime(timerid, 0, &its, NULL) == -1)
+   	if (timer_settime(timerid[i], 0, &its, NULL) == -1)
         {
         perror("timer_settime");
         }
 
-        return timerid;
+        return 1;
  }
 
 void print_siginfo(siginfo_t *si)
 {
-   timer_t * tidp;
+   timer_t *tidp;
    int or;
 
    tidp = si->si_value.sival_ptr;
@@ -91,21 +91,22 @@ int block_and_create_timer(struct sigaction sa, sigset_t mask)
    return 1;
 }
 
- timer_t setting_timer_count(const char *str, timer_t *timerid) //set counter
+ int setting_timer_count(const char *str, timer_t *timerid,int i) //set counter
 {
    char *dupstr;
-   timer_t *timerid_ret;
+   
+   //timer_t *timerid_ret;
    dupstr = strdup(str);
-   timerid_ret = timerid;
+   //timerid_ret = timerid;
    
    its.it_value.tv_sec = atoi(dupstr);
    its.it_value.tv_nsec = 0;
    its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
    its.it_interval.tv_nsec = 0;
 
-   sev.sigev_value.sival_ptr = &timerid_ret;
+   sev.sigev_value.sival_ptr = &timerid[i];
    //timerid_tmp = &timerid[i];
 
    free(dupstr);
-   return timerid_ret;
+   return 1;
 }
