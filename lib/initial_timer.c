@@ -4,92 +4,63 @@
 #include <stdio.h>
 #include <signal.h>
 #include <time.h>
-
+#include <pthread.h>
 #include "initial_timer.h"
 #include "currTime.h"
+#include "linked_list.h"
 
 #define errExit(msg)  do { perror(msg); exit(EXIT_FAILURE); } while (0)
 #define CLOCKID CLOCK_REALTIME
 #define SIG SIGRTMIN
 
-struct sigevent sev;
-struct itimerspec its;
 sigset_t mask;
-struct sigaction sa;
+
 int i;
-siginfo_t *si;
-void *uc ;
-int sig ;
 
+struct linked_list *lst;
 
-
- int timer_start(timer_t *timerid, int i)
- {
-  
-  int check_timer_create;
-	check_timer_create = timer_create(CLOCKID, &sev, &timerid[i]);
-
-  if(check_timer_create == -1)
-        {
-       	perror("timer_create");
-        }
-
-   	printf("timer ID is 0x%lx (%d) \n", (long)timerid[i],i);
-
-   /* Start the timer */
-
-   	if (timer_settime(timerid[i], 0, &its, NULL) == -1)
-        {
-        perror("timer_settime");
-        }
-
-        return 1;
- }
-
-/*void print_siginfo(siginfo_t *si)
+void * timerHandler()
 {
-   timer_t *tidp;
-   int or;
+ // printf("call handler function \n");
+ // int sig;
+    siginfo_t *si;
+    timer_t  * tidp;
+    void (*handler_call);
+    struct linked_list * lst_find ;
 
-   tidp = si->si_value.sival_ptr;
+    tidp = si->si_value.sival_ptr;
+    //printf("[%s] timer  [%p] \n",currTime("%T"),&tidp);
+     
+    lst_find = search_in_list(tidp,NULL);
+    //print_list();
+    printf("[%s] timer ID is 0x%lx \n",currTime("%T"),(long)&lst_find->timerid);
+    //lst_find->handler();
+    //print_list();
+    //lst_find->handler();
+   
+    //lst_find->handler;
 
-   printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
-   printf("    *sival_ptr = 0x%lx\n", (long)*tidp);
-
-   or = timer_getoverrun(tidp);
-   if (or == -1)
-       perror("timer_getoverrun");
-   else
-       printf("    overrun count = %d\n", or);
+    //lst_find = lst_find->next;
+   // }
+   /* while(lst != NULL)
+    {
+      printf("lst->timerid \n");
+    if ( tidp == lst->timerid )
+      //lst->handler;
+      printf("EXIT_SUCCESS \n");
+      lst = lst->next;
+    } */
+      //return (0);
 }
-
-void handler()
+int block_and_create_timer(int timming, struct linked_list * lst,int i,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
 {
-    *Note: calling printf() from a signal handler is not
-      strictly correct, since printf() is not async-signal-safe;
-      see signal(7)
-
-   printf("[%s]Caught signal %d\n",currTime("%T"),sig);
-   print_siginfo(si);
-}  */
- /*void handler(int sig, siginfo_t *si, void *uc)
-{
-  timer_t * tidptr;
-  tidptr=si->si_value.sival_ptr;
-  printf("[%s] Got signal %d\n",currTime("%T"),sig);
-  printf("*sigval_ptr         =%ld\n",(long)*tidptr);
-  printf(" timer_getoverrun() =%d\n",timer_getoverrun(*tidptr));
-
-}*/
-
-
-
-int block_and_create_timer(struct sigaction sa, sigset_t mask,void(*handler))
-{
-   sa.sa_flags = SA_SIGINFO;
-   sa.sa_sigaction = handler;
+  struct sigaction sa ;
+  struct itimerspec its;
+  struct sigevent sev;
+  /*set up handler*/
+   sa.sa_flags =  SA_SIGINFO;//SA_SIGINFO;
+   sa.sa_sigaction = timerHandler;
    sigemptyset(&sa.sa_mask);
-
    if (sigaction(SIGRTMAX, &sa, NULL) == -1)
        errExit("sigaction");
 
@@ -99,78 +70,54 @@ int block_and_create_timer(struct sigaction sa, sigset_t mask,void(*handler))
    sigemptyset(&mask);
    sigaddset(&mask, SIG);
    if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1)
-       errExit("sigprocmask");
+       errExit("sigprocmask"); 
 
-   /* Create the timer */
+  sev.sigev_notify=SIGEV_SIGNAL;
+  sev.sigev_signo = SIGRTMAX;
+  sev.sigev_value.sival_ptr = &lst->timerid;
 
-   sev.sigev_notify = SIGEV_SIGNAL;
-   sev.sigev_signo = SIGRTMAX;
-   return 1;
-}
+  if((timer_create(CLOCK_REALTIME, &sev, &lst->timerid)) == -1)
+        {
+        perror("timer_create");
+        }
 
- int setting_timer_count(const char *str, timer_t *timerid,int i) //set counter
-{
-   char *dupstr;
-   
-   //timer_t *timerid_ret;
-   dupstr = strdup(str);
-   //timerid_ret = timerid;
-   
-   its.it_value.tv_sec = atoi(dupstr);
+    printf("timer ID is 0x%lx \n", (long)lst->timerid);
+
+   its.it_value.tv_sec = timming;
    its.it_value.tv_nsec = 0;
-   its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
+   its.it_interval.tv_sec = loop_times;//its.it_value.tv_sec;
    its.it_interval.tv_nsec = 0;
 
-   sev.sigev_value.sival_ptr = &timerid[i];
-   //timerid_tmp = &timerid[i];
+   if (timer_settime(lst->timerid, 0, &its, NULL) == -1)
+        {
+        perror("timer_settime");
+        }
 
-   free(dupstr);
-   return 1;
+   return (0);
 }
 
-void timer(timer_t *timerid, void(*handler),int argc, char *argv[], int loop)
+void * ptimer_stop()
 {
-    
-    // timer_t *timerid_tmp;
-  if (argc < 2 ) 
+  char char_stop;
+  //while(1)
+  //{
+  scanf("%s",&char_stop);
+  if(char_stop == 'q')
   {
-       fprintf(stderr, "Usage: %s <int-secs> <int-secs>...\n",
-               argv[0]);
-       exit(EXIT_FAILURE);
-    }
+    exit(EXIT_SUCCESS);
+  }
+  return (0);
+}
 
-   //timerid = calloc(argc-1,sizeof(timer_t));
-
-   if(timerid == NULL)
-   {
-    errExit("timerid NULL");
-   }
-  // timerid_tmp = timerid;
-
+void timer(timer_t * timerid, void(*handler), int timming, int loop_times)
+{
+   
+    lst = add_to_list(&timerid, handler,true);
+  
    printf("Establishing handler for signal %d\n", SIG);
-
-   if(block_and_create_timer(sa,mask,handler) == -1)
+   //printf("%lx \n",si->si_timerid);
+   if(block_and_create_timer(timming,lst,i,loop_times) == -1)
    {
     perror("Error Create \n");
    }
-
-   for(i = 1;i < argc;i++)
-   {
-    if(setting_timer_count(argv[i],timerid,i) == -1)
-      {
-        perror("Error setting \n");
-      }
-    
-    if(timer_start(timerid, i) == -1)
-    {
-      perror("can not Create");
-    }
-
-   }
-   for(;;)
-   {
-    pause();
-   }
-   free(timerid);
-   //return 0;
  }

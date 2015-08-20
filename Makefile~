@@ -1,6 +1,6 @@
 
 TIMER_LIB = ./lib
-LIB_SRC = lib/currTime.c lib/initial_timer.c lib/vnode.c lib/utils.c lib/linked_list.c
+LIB_SRC = lib/currTime.c lib/initial_timer.c lib/vnode.c
 
 CC = gcc
 CFLAGS= -I. -Wall -s -lrt
