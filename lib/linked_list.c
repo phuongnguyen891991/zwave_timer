@@ -15,12 +15,11 @@ struct linked_list * create_list(timer_t * timerid , void (*handler))
 		printf("\n Create fail \n");
 		return NULL;
 	}	
-	//lst->number = number;
 	lst->timerid = timerid;
 	lst->handler = handler;
+	lst->size = 0;
 	lst->next = NULL;
 	head = curr = lst;
-	//free(lst);
 	return lst;
 }
 
@@ -37,7 +36,6 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 		printf("\n node create fail \n");
 		return NULL;
 	}
-	//lst->number = number;
 	lst->timerid  = timerid;
 	lst->handler = handler;
 	lst->next = NULL;
@@ -51,7 +49,7 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 		lst->next = head;
 		head = lst;
 	}
-	//free(lst);
+	lst->size ++;
 	return lst;
 }
 struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
@@ -77,6 +75,7 @@ struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
 	}
 	else
 	{
+		printf("FAIL \n");
 		return NULL;
 	}
 }
@@ -87,10 +86,31 @@ void print_list(void)
     printf("\n -------Printing list Start------- \n");
     while(lst != NULL)
     {
-        printf("\nTimer [%p]  -- [%p] --[%p]",lst->timerid,lst->handler,lst->next);
+        printf("\nTimer [%p]  -- [%p] --[%p] --[%d]",lst->timerid,lst->handler,lst->next,lst->size);
         lst = lst->next;
     }
     printf("\n -------Printing list End------- \n");
 
-    //return;
+}
+
+void find_list(timer_t *timerid)
+{
+    struct linked_list *lst = head;
+    timer_t * timer_compare;
+
+    //printf("\n -------Finding list Start------- \n");
+    while(lst != NULL)
+    {
+    	timer_compare = lst->timerid;
+    	if(timer_compare == timerid)
+    	{
+    		//printf("\nTimer [%p]  -- [%p] --[%p] --[%d] \n",lst->timerid,lst->handler,lst->next,lst->size);
+    		lst->handler();
+    	}
+    	
+        //printf("\nTimer [%p]  -- [%p] --[%p] --[%d]",lst->timerid,lst->handler,lst->next,lst->size);
+        lst = lst->next;
+    }
+    //printf("\n -------Findting list End------- \n");
+
 }

@@ -20,56 +20,26 @@ struct linked_list * head_find = NULL;
 struct linked_list *lst;
 int i;
 
-void * timerHandler(void)
+void * timerHandler(int sig, siginfo_t *si, void *uc)
 {
- // printf("call handler function \n");
- // int sig;
-    siginfo_t *si;
-    timer_t  * tidp;
-
-    
-    void (*handler_call);
-    struct linked_list * lst_find= head_find;
+    timer_t * tidp;
+    struct linked_list * lst_find;//= head_find;
+    struct linked_list * prev = NULL;
     lst_find = lst;
+    int counter_loop;
 
-    tidp = &si->si_value.sival_ptr;
-    printf("tidp [%p] \n",(long)tidp);
-    //printf("[%s] timer (in handler function)  [%p] \n",currTime("%T"),(long)lst->timerid);
-    
-    //lst_find = search_in_list(tidp,NULL);
-    //while(lst!=NULL)
-    //{
-      printf("[%s] timer ID (in handler function) is 0x%lx \n",currTime("%T"),(long)lst_find->timerid);
-      lst->handler();
-  //  } 
-    //  lst = lst->next;
-      //return (0);
-    //}
+    tidp = si->si_value.sival_ptr;
+
+    printf("[%s] tidp [%p]\n",currTime("%T"),(long)*tidp);
+    find_list(*tidp);
+    printf("\n");
 }
 int block_and_create_timer(int timming, struct linked_list * lst,int i,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
 {
-  struct sigaction sa ;
+
   struct itimerspec its;
+  struct sigaction sa ;
   
-  /*set up handler*/
-   sa.sa_flags =  SA_SIGINFO;//SA_SIGINFO;
-   sa.sa_sigaction = timerHandler;
-   sigemptyset(&sa.sa_mask);
-   if (sigaction(SIGRTMAX, &sa, NULL) == -1)
-       errExit("sigaction");
-
-   /* Block timer signal temporarily */
-
-   printf("Blocking signal %d\n", SIG);
-   sigemptyset(&mask);
-   sigaddset(&mask, SIG);
-   if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1)
-       errExit("sigprocmask"); 
-
-  sev.sigev_notify=SIGEV_SIGNAL;
-  sev.sigev_signo = SIGRTMAX;
-  sev.sigev_value.sival_ptr = lst->timerid;
-
   if((timer_create(CLOCK_REALTIME, &sev, &lst->timerid)) == -1)
         {
         perror("timer_create");
@@ -102,14 +72,33 @@ void * ptimer_stop()
   }
   return (0);
 }
+void init_timer(void)
+{
+  struct sigaction sa ;
+  /*set up handler*/
+    sa.sa_flags =  SA_SIGINFO;//SA_SIGINFO;
+    sa.sa_sigaction = timerHandler;
+   
+   sigemptyset(&sa.sa_mask);
+   if (sigaction(SIGRTMAX, &sa, NULL) == -1)
+       errExit("sigaction");
+   /* Block timer signal temporarily */
+   printf("Blocking signal %d\n", SIG);
+   sigemptyset(&mask);
+   sigaddset(&mask, SIG);
+}
 
 void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
 {
-   
-    lst = add_to_list(timerid_input, handler,true);
-  
+    //struct linked_list * lst;   
+    lst = add_to_list(&timerid_input, handler,true);
+   if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1)
+       errExit("sigprocmask"); 
+
+  sev.sigev_notify=SIGEV_SIGNAL;
+  sev.sigev_signo = SIGRTMAX;
    printf("Establishing handler for signal %d\n", SIG);
-   //printf("%lx \n",si->si_timerid);
+   sev.sigev_value.sival_ptr = &lst->timerid;
    if(block_and_create_timer(timming,lst,i,loop_times) == -1)
    {
     perror("Error Create \n");
