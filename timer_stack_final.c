@@ -48,23 +48,11 @@ timer_t * timerid3;
  void * handler_func2()
 {
   printf("handler 2 signal is called \n");
- /* timer_t * tidptr2;
-  //tidptr2=si->si_value.sival_ptr;
-  printf("[%s] Caught signal %d\n",currTime("%T"),sig);
- // printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
-  printf("     *sigval_ptr = 0x%lx\n",(long)tidptr2);
- // printf(" overrun count = %d\n",timer_getoverrun(tidptr2)); */
   return (0);
 }
 void * handler_func3()
 {
   printf("handler 3 signal is called \n");
- /* timer_t * tidptr3;
-  //tidptr2=si->si_value.sival_ptr;
-  printf("[%s] Caught signal %d\n",currTime("%T"),sig);
- // printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
-  printf("     *sigval_ptr = 0x%lx\n",(long)tidptr3);
- // printf(" overrun count = %d\n",timer_getoverrun(tidptr2)); */
   return (0);
 }
 
@@ -75,14 +63,14 @@ int main(int argc, char *argv[])
 int loop_times = 0 ; 
 
 int timming = 1;
-int timming1 = 2;
-int timming2 = 3;
-int timming3 = 4;
+int timming1 = 3;
+int timming2 = 4;
+int timming3 = 5;
 
 timer(timerid  ,handler_func1,timming ,loop_times);
 timer(timerid1 ,handler_func2,timming1 ,loop_times);
-timer(timerid2 ,handler_func3,timming2 ,loop_times);
-timer(timerid3 ,handler_func2,timming3 ,loop_times);
+//timer(timerid2 ,handler_func3,timming2 ,loop_times);
+//timer(timerid3 ,handler_func2,timming3 ,loop_times);
 print_list();
 
 while(1)
