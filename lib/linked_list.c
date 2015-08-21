@@ -114,3 +114,37 @@ void find_list(timer_t *timerid)
     //printf("\n -------Findting list End------- \n");
 
 }
+
+
+int delete_from_list(timer_t * timerid)
+{
+    struct linked_list *prev = NULL;
+    struct linked_list *del = NULL;
+
+    //printf("\n Deleting value [%d] from list\n",val);
+
+    del = search_in_list(timerid,&prev);
+    if(del == NULL)
+    {
+        return -1;
+    }
+    else
+    {
+        if(prev != NULL)
+            prev->next = del->next;
+
+        if(del == curr)
+        {
+            curr = prev;
+        }
+        else if(del == head)
+        {
+            head = del->next;
+        }
+    }
+
+    free(del);
+    del = NULL;
+
+    return 0;
+}
