@@ -39,6 +39,7 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 	lst->timerid  = timerid;
 	lst->handler = handler;
 	lst->next = NULL;
+	lst->size++;
 	if(ad_to_end)
 	{
 		curr->next = lst;
@@ -49,14 +50,33 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 		lst->next = head;
 		head = lst;
 	}
-	lst->size ++;
+	//lst->size ++;
 	return lst;
 }
 struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
 {
 	struct linked_list *lst = head;
 	struct linked_list *tmp = NULL;
-	bool found = false;
+
+    timer_t * timer_compare;
+
+    //printf("\n -------Finding list Start------- \n");
+    while(lst != NULL)
+    {
+    	timer_compare = lst->timerid;
+    	if(timer_compare == timerid)
+    	{
+    		//printf("\nTimer [%p]  -- [%p] --[%p] --[%d] \n",lst->timerid,lst->handler,lst->next,lst->size);
+    		return lst;
+    	}
+    	
+        //printf("\nTimer [%p]  -- [%p] --[%p] --[%d]",lst->timerid,lst->handler,lst->next,lst->size);
+        lst = lst->next;
+    }
+    //printf("\n -------Findting list End------- \n");
+
+}
+/*	bool found = false;
 	if(lst->timerid == timerid)
 	{
 		found = true;
@@ -77,8 +97,8 @@ struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
 	{
 		printf("FAIL \n");
 		return NULL;
-	}
-}
+	} */
+//}
 void print_list(void)
 {
     struct linked_list *lst = head;
@@ -86,14 +106,14 @@ void print_list(void)
     printf("\n -------Printing list Start------- \n");
     while(lst != NULL)
     {
-        printf("\nTimer [%p]  -- [%p] --[%p] --[%d]",lst->timerid,lst->handler,lst->next,lst->size);
+        printf("\nTimer [%p]  -- [%p] --[%p] --[..]",lst->timerid,lst->handler,lst->next,lst->size);
         lst = lst->next;
     }
     printf("\n -------Printing list End------- \n");
 
 }
 
-void find_list(timer_t *timerid)
+void find_list_call_handler(timer_t *timerid)
 {
     struct linked_list *lst = head;
     timer_t * timer_compare;
@@ -113,4 +133,30 @@ void find_list(timer_t *timerid)
     }
     //printf("\n -------Findting list End------- \n");
 
+}
+
+void delete_from_list(timer_t * timerid_compare) 
+{
+    //struct linked_list* current = lst_input;
+    struct linked_list* previous = NULL;
+    struct linked_list *lst = head;
+     timer_t * tmp;
+
+    while (lst != NULL) {
+    	tmp = lst->timerid;
+        if (tmp == timerid_compare)
+         {
+            if (previous == NULL) {
+                lst = lst->next;
+               // free(lst_input);
+            } else {
+                previous->next = lst->next;
+               // free(current);
+                lst = previous->next;
+            }
+        } else {
+            previous = lst;
+            lst = lst->next;
+        }
+    }    
 }

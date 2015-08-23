@@ -22,19 +22,14 @@ int i;
 
 void * timerHandler(int sig, siginfo_t *si, void *uc)
 {
-    timer_t * tidp;
-    struct linked_list * lst_find;//= head_find;
-    struct linked_list * prev = NULL;
-    lst_find = lst;
-    int counter_loop;
-
+    timer_t * tidp; 
     tidp = si->si_value.sival_ptr;
 
     printf("[%s] tidp [%p]\n",currTime("%T"),(long)*tidp);
-    find_list(*tidp);
+    find_list_call_handler(*tidp);
     printf("\n");
 }
-int block_and_create_timer(int timming, struct linked_list * lst,int i,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
+int block_and_create_timer(int timming, struct linked_list * lst,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
 {
 
   struct itimerspec its;
@@ -99,8 +94,28 @@ void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
   sev.sigev_signo = SIGRTMAX;
    printf("Establishing handler for signal %d\n", SIG);
    sev.sigev_value.sival_ptr = &lst->timerid;
-   if(block_and_create_timer(timming,lst,i,loop_times) == -1)
+   if(block_and_create_timer(timming,lst,loop_times) == -1)
    {
     perror("Error Create \n");
    }
+ }
+ void timer_cancel(timer_t * timerid_cancel)
+ {
+
+  int ret =0;
+  char quit;
+  struct linked_list * lst_tmp;
+  //int check_timer;
+  //scanf("%c",&quit);
+ // if(quit == 'q')
+//  {
+//   lst_tmp = search_in_list(*timerid_cancel,NULL);
+ //  if(block_and_create_timer(0,lst,0) ==-1);
+//   {
+//     perror("Error create timer cancel \n");
+//   }
+   delete_from_list(*timerid_cancel);
+       
+ // }
+ // print_list();
  }

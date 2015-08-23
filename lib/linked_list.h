@@ -6,7 +6,7 @@ struct linked_list {
 	int number ;
 	timer_t *timerid;
 	void  (*handler)();
-	int size;
+	int *size ;
 	struct linked_list *next;
 };
 
@@ -14,4 +14,5 @@ struct linked_list * create_list(timer_t *timerid ,void (*handler));
 struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_end);
 void print_list();
 struct linked_list * search_in_list(timer_t *timerid,struct linked_list ** prev);
-void find_list(timer_t *timerid);
+void find_list_call_handler(timer_t *timerid);
+void delete_from_list(timer_t * timerid_conpare);
