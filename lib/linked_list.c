@@ -17,7 +17,7 @@ struct linked_list * create_list(timer_t * timerid , void (*handler))
 	}	
 	lst->timerid = timerid;
 	lst->handler = handler;
-	lst->size = 0;
+	//lst->size = 0;
 	lst->next = NULL;
 	head = curr = lst;
 	return lst;
@@ -39,6 +39,7 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 	lst->timerid  = timerid;
 	lst->handler = handler;
 	lst->next = NULL;
+	//lst->size++;
 	if(ad_to_end)
 	{
 		curr->next = lst;
@@ -49,14 +50,33 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 		lst->next = head;
 		head = lst;
 	}
-	lst->size ++;
+	//lst->size ++;
 	return lst;
 }
 struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
 {
 	struct linked_list *lst = head;
 	struct linked_list *tmp = NULL;
-	bool found = false;
+
+    timer_t * timer_compare;
+
+    //printf("\n -------Finding list Start------- \n");
+    while(lst != NULL)
+    {
+    	timer_compare = lst->timerid;
+    	if(timer_compare == timerid)
+    	{
+    		//printf("\nTimer [%p]  -- [%p] --[%p] --[%d] \n",lst->timerid,lst->handler,lst->next,lst->size);
+    		return lst;
+    	}
+    	
+        //printf("\nTimer [%p]  -- [%p] --[%p] --[%d]",lst->timerid,lst->handler,lst->next,lst->size);
+        lst = lst->next;
+    }
+    //printf("\n -------Findting list End------- \n");
+
+}
+/*	bool found = false;
 	if(lst->timerid == timerid)
 	{
 		found = true;
@@ -77,8 +97,8 @@ struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
 	{
 		printf("FAIL \n");
 		return NULL;
-	}
-}
+	} */
+//}
 void print_list(void)
 {
     struct linked_list *lst = head;
@@ -86,14 +106,14 @@ void print_list(void)
     printf("\n -------Printing list Start------- \n");
     while(lst != NULL)
     {
-        printf("\nTimer [%p]  -- [%p] --[%p] --[%d]",lst->timerid,lst->handler,lst->next,lst->size);
+        printf("\nTimer [%p]  -- [%p] --[%p] --[..]",lst->timerid,lst->handler,lst->next);
         lst = lst->next;
     }
     printf("\n -------Printing list End------- \n");
 
 }
 
-void find_list(timer_t *timerid)
+void find_list_call_handler(timer_t *timerid)
 {
     struct linked_list *lst = head;
     timer_t * timer_compare;
@@ -104,7 +124,7 @@ void find_list(timer_t *timerid)
     	timer_compare = lst->timerid;
     	if(timer_compare == timerid)
     	{
-    		//printf("\nTimer [%p]  -- [%p] --[%p] --[%d] \n",lst->timerid,lst->handler,lst->next,lst->size);
+    		printf("\nTimer [%p]\n",lst->timerid);
     		lst->handler();
     	}
     	
@@ -112,39 +132,34 @@ void find_list(timer_t *timerid)
         lst = lst->next;
     }
     //printf("\n -------Findting list End------- \n");
-
 }
 
-
-int delete_from_list(timer_t * timerid)
+//void delete_from_list(timer_t * timerid_compare,struct linked_list *head_tmp) 
+void delete_from_list(timer_t *timerid,struct linked_list * ptr)
 {
-    struct linked_list *prev = NULL;
-    struct linked_list *del = NULL;
+    // Store head node
+    //struct linked_list *lst = head;
+    struct linked_list *temp;
+    timer_t  *timer_compare;
+ 
+ 	printf("deltete start \n");
 
-    //printf("\n Deleting value [%d] from list\n",val);
-
-    del = search_in_list(timerid,&prev);
-    if(del == NULL)
+    // Search for the key to be deleted, keep track of the
+    // previous node as we need to change 'prev->next'
+    while (ptr != NULL)
     {
-        return -1;
-    }
-    else
-    {
-        if(prev != NULL)
-            prev->next = del->next;
-
-        if(del == curr)
-        {
-            curr = prev;
-        }
-        else if(del == head)
-        {
-            head = del->next;
-        }
-    }
-
-    free(del);
-    del = NULL;
-
-    return 0;
+    	timer_compare = ptr->timerid;
+    	if(timer_compare = timerid)
+	    { 
+	    	printf("/////////////////////   \n");
+	        temp = ptr->next;
+	        *ptr = *temp;
+	      //  ptr->handler = temp->handler;
+	      //  ptr->next = temp->next;            // free old head
+	        printf("checking [%p]'=='' ..!\n",ptr->timerid);
+	       free(temp);
+	        //return;
+	    }
+	 ptr = ptr->next;
+	}
 }

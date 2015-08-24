@@ -60,21 +60,23 @@ void * handler_func3()
 int main(int argc, char *argv[])
 {
 
-int loop_times = 5 ; 
+int loop_times = 0 ; 
 int loop_times1 = 3;
 int loop_times2 = 2;
+
 int timming = 1;
 int timming1 = 3;
 int timming2 = 4;
 int timming3 = 5;
 
 init_timer();
-timer(timerid  ,handler_func1,timming ,loop_times);
-timer(timerid1 ,handler_func2,timming1 ,loop_times1);
-timer(timerid2 ,handler_func3,timming2 ,loop_times2);
+timer(timerid,handler_func1,timming ,loop_times);
+timer(timerid1 ,handler_func2,timming1 ,loop_times);
+//timer(timerid2 ,handler_func3,timming2 ,loop_times);
 //timer(timerid3 ,handler_func2,timming3 ,loop_times);
 print_list();
-
+timer_cancel(timerid);
+print_list();
 while(1)
 {
 	pause();

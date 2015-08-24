@@ -21,16 +21,11 @@ struct linked_list *lst;
 
 void * timerHandler(int sig, siginfo_t *si, void *uc)
 {
-    timer_t * tidp;
-    struct linked_list * lst_find;//= head_find;
-    struct linked_list * prev = NULL;
-    lst_find = lst;
-    int counter_loop;
-
+    timer_t * tidp; 
     tidp = si->si_value.sival_ptr;
 
     printf("[%s] tidp [%p]\n",currTime("%T"),(long)*tidp);
-    find_list(*tidp);
+    find_list_call_handler(*tidp);
     printf("\n");
 }
 int block_and_create_timer(int timming, struct linked_list * lst,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
@@ -103,8 +98,34 @@ void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
     perror("Error Create \n");
    }
  }
-
- int timer_cancel(timer_t * timerid)
+int init_timer_cancel(int sig, siginfo_t *si, void *uc)
+{
+  timer_t *tidp ;
+  tidp = si->si_value.sival_ptr;
+  return (*tidp);
+}
+ void timer_cancel(timer_t *timerid_cancel)
  {
-  
+
+  //siginfo_t *si;
+  init_timer();
+  timerid_cancel = init_timer_cancel;
+  //timer_t *timerid_cancel;
+  //siginfo_t *si;
+  //timerid_cancel = timerid;
+  //timerid_cancel = si->si_value.sival_ptr;
+  //struct linked_list * lst_tmp;
+  //int check_timer;
+  //scanf("%c",&quit);
+ // if(quit == 'q')
+//  
+//   lst_tmp = search_in_list(*timerid_cancel,NULL);
+ //  if(block_and_create_timer(0,lst,0) ==-1);
+//   {
+//     perror("Error create timer cancel \n");
+//   }
+  printf("delete link list \n");
+  delete_from_list(&timerid_cancel,lst) ;
+ // }
+ // print_list();
  }
