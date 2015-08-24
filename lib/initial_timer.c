@@ -98,34 +98,37 @@ void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
     perror("Error Create \n");
    }
  }
-int init_timer_cancel(int sig, siginfo_t *si, void *uc)
-{
-  timer_t *tidp ;
-  tidp = si->si_value.sival_ptr;
-  return (*tidp);
-}
+
  void timer_cancel(timer_t *timerid_cancel)
  {
-
-  //siginfo_t *si;
   init_timer();
-  timerid_cancel = init_timer_cancel;
-  //timer_t *timerid_cancel;
-  //siginfo_t *si;
-  //timerid_cancel = timerid;
-  //timerid_cancel = si->si_value.sival_ptr;
-  //struct linked_list * lst_tmp;
-  //int check_timer;
-  //scanf("%c",&quit);
- // if(quit == 'q')
-//  
-//   lst_tmp = search_in_list(*timerid_cancel,NULL);
- //  if(block_and_create_timer(0,lst,0) ==-1);
-//   {
-//     perror("Error create timer cancel \n");
-//   }
-  printf("delete link list \n");
-  delete_from_list(&timerid_cancel,lst) ;
+  int ret_linked_list;
+  char quit;
+
+  scanf("%s",&quit);
+//  if(quit == 'q')
+//  {
+  /*  printf(" signal cancel is %s  n",quit );
+    sev.sigev_value.sival_ptr = &lst->timerid;
+    if(block_and_create_timer(0,&lst,0) == -1)
+    {
+      perror("Error creae timer cancel \n");
+    }
+    else
+    {*/
+    while(lst!=NULL)
+      {
+       ret_linked_list = delete_from_list(&timerid_cancel) ;
+            if(ret_linked_list != 0)
+            {
+                printf("\n delete  failed, no such element found\n");
+            }
+            else
+            {
+                printf("\n delete  [%p] passed \n",timerid_cancel);
+            }
+            lst = lst->next;
+      }
+//    }
  // }
- // print_list();
- }
+}

@@ -15,4 +15,4 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 void print_list();
 struct linked_list * search_in_list(timer_t *timerid,struct linked_list ** prev);
 void find_list_call_handler(timer_t *timerid);
-void delete_from_list(timer_t *timerid_tmp,struct linked_list * lst);
+int delete_from_list(timer_t *timerid_tmp);

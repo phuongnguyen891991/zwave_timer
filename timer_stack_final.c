@@ -60,7 +60,7 @@ void * handler_func3()
 int main(int argc, char *argv[])
 {
 
-int loop_times = 0 ; 
+int loop_times = 5 ; 
 int loop_times1 = 3;
 int loop_times2 = 2;
 
