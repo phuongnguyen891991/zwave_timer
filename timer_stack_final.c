@@ -59,7 +59,8 @@ void * handler_func3()
 
 int main(int argc, char *argv[])
 {
-
+ timerid = malloc(sizeof(timer_t));
+ timerid1 = malloc(sizeof(timer_t));
 int loop_times = 5 ; 
 int loop_times1 = 3;
 int loop_times2 = 2;

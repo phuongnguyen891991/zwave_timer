@@ -104,31 +104,27 @@ void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
   init_timer();
   int ret_linked_list;
   char quit;
-
-  scanf("%s",&quit);
-//  if(quit == 'q')
-//  {
-  /*  printf(" signal cancel is %s  n",quit );
-    sev.sigev_value.sival_ptr = &lst->timerid;
-    if(block_and_create_timer(0,&lst,0) == -1)
+  
+ // scanf("%s",&quit);
+  
+   // while(lst!=NULL)
+     // {
+    struct linked_list *prevtmp = NULL;
+    struct linked_list *deltmp = NULL;
+    deltmp = search_in_list(timerid_cancel,&prevtmp);
     {
-      perror("Error creae timer cancel \n");
+      timer(deltmp->timerid,0,NULL,0);
     }
-    else
-    {*/
-    while(lst!=NULL)
-      {
-       ret_linked_list = delete_from_list(&timerid_cancel) ;
-            if(ret_linked_list != 0)
+
+       ret_linked_list = delete_from_list(timerid_cancel) ;
+      /*      if(ret_linked_list != 0)
             {
                 printf("\n delete  failed, no such element found\n");
             }
             else
             {
-                printf("\n delete  [%p] passed \n",timerid_cancel);
+                printf("\n delete  [%p] passed \n",&timerid_cancel);
             }
             lst = lst->next;
-      }
-//    }
- // }
-}
+      } */
+  }

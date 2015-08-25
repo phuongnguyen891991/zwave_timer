@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
 #include "linked_list.h"
 
 struct linked_list * head = NULL;
@@ -53,7 +52,7 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 }
 struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
 {
-struct linked_list *ptr = head;
+    struct linked_list *ptr = head;
     struct linked_list *tmp = NULL;
     bool found = false;
 
@@ -119,9 +118,10 @@ int delete_from_list(timer_t *timerid)
     struct linked_list *prev = NULL;
     struct linked_list *del = NULL;
 
-    printf("\n Deleting value node from list\n");
+   // printf("\n Deleting value node from list\n");
 
     del = search_in_list(timerid,&prev);
+    printf("[%p]",timerid);
     if(del == NULL)
     {
         return -1;
@@ -129,15 +129,20 @@ int delete_from_list(timer_t *timerid)
     else
     {
         if(prev != NULL)
+        {
             prev->next = del->next;
+           // printf("1\n");
+        }
 
         if(del == curr)
         {
             curr = prev;
+          //  printf("2 \n");
         }
         else if(del == head)
         {
             head = del->next;
+           // printf("3\n");
         }
     }
     free(del);
