@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <signal.h>
+#include <time.h>
 #include "linked_list.h"
 
 struct linked_list * head = NULL;
@@ -115,13 +117,15 @@ void find_list_call_handler(timer_t *timerid)
 
 int delete_from_list(timer_t *timerid)
 {
+    int counter = 0;
+    int counter_loop = 0;
     struct linked_list *prev = NULL;
     struct linked_list *del = NULL;
-
+    struct itimerspec its;
    // printf("\n Deleting value node from list\n");
 
     del = search_in_list(timerid,&prev);
-    printf("[%p]",timerid);
+    printf("[%p] \n",timerid);
     if(del == NULL)
     {
         return -1;
@@ -141,6 +145,11 @@ int delete_from_list(timer_t *timerid)
         }
         else if(del == head)
         {
+         
+               its.it_value.tv_sec = 0;
+               its.it_value.tv_nsec = 0;
+               its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
+               its.it_interval.tv_nsec = 0;   
             head = del->next;
            // printf("3\n");
         }

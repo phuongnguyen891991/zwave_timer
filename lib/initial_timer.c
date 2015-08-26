@@ -112,9 +112,9 @@ void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
     struct linked_list *prevtmp = NULL;
     struct linked_list *deltmp = NULL;
     deltmp = search_in_list(timerid_cancel,&prevtmp);
-    {
-      timer(deltmp->timerid,0,NULL,0);
-    }
+   // {
+    //  timer(deltmp->timerid,0,NULL,0);
+   // }
 
        ret_linked_list = delete_from_list(timerid_cancel) ;
       /*      if(ret_linked_list != 0)
