@@ -101,18 +101,18 @@ void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_time
 
  void timer_cancel(timer_t *timerid_cancel)
  {
-// init_timer();
-  int ret_linked_list;
+
+    int ret_linked_list;
 
     struct linked_list *prevtmp = NULL;
     struct linked_list *deltmp = NULL;
-    //printf("timer_cancel: [%p]",&timerid_cancel);
+
     deltmp = search_in_list(timerid_cancel,&prevtmp);
     {
       if (timer_delete (timerid_cancel) < 0)
           {
-              printf ("Error");
-              exit (EXIT_FAILURE);
+              printf ("Error \n");
+
           }
     }
        ret_linked_list = delete_from_list(timerid_cancel) ;
@@ -124,5 +124,4 @@ void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_time
             {
                 printf("\n delete passed \n");
             }
-            lst = lst->next;
   }

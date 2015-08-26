@@ -48,11 +48,13 @@ timer_t * timerid3;
  void * handler_func2()
 {
   printf("handler 2 signal is called \n");
+  timer_cancel(timerid);
   return (0);
 }
 void * handler_func3()
 {
   printf("handler 3 signal is called \n");
+  timer_cancel(timerid1); 
   return (0);
 }
 
@@ -61,6 +63,7 @@ int main(int argc, char *argv[])
 {
  timerid = calloc(1,sizeof(timer_t));
  timerid1 = calloc(1,sizeof(timer_t));
+ timerid2 = calloc(1,sizeof(timer_t));
 int loop_times = 5 ; 
 int loop_times1 = 3;
 int loop_times2 = 2;
@@ -73,11 +76,11 @@ int timming3 = 5;
 init_timer();
 timer(timerid,handler_func1,timming ,loop_times);
 timer(timerid1 ,handler_func2,timming1 ,loop_times);
-//timer(timerid2 ,handler_func3,timming2 ,loop_times);
+timer(timerid2 ,handler_func3,timming2 ,loop_times);
 //timer(timerid3 ,handler_func2,timming3 ,loop_times);
 print_list();
-timer_cancel(timerid);
-print_list();
+//timer_cancel(timerid);
+//print_list();
 while(1)
 {
 	pause();

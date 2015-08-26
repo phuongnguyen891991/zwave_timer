@@ -39,7 +39,6 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 	lst->timerid  = timerid;
 	lst->handler = handler;
 	lst->next = NULL;
-	//lst->size++;
 	if(ad_to_end)
 	{
 		curr->next = lst;
@@ -71,7 +70,6 @@ struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
             ptr = ptr->next;
         }
     }
-
     if(true == found)
     {
         if(prev)
@@ -108,7 +106,6 @@ void find_list_call_handler(timer_t *timerid)
     	timer_compare = lst->timerid;
     	if(timer_compare == timerid)
     	{
-    		//printf("\nTimer [%p]\n",lst->timerid);
     		lst->handler();
     	}
         lst = lst->next;
@@ -117,15 +114,10 @@ void find_list_call_handler(timer_t *timerid)
 
 int delete_from_list(timer_t *timerid)
 {
-    int counter = 0;
-    int counter_loop = 0;
     struct linked_list *prev = NULL;
     struct linked_list *del = NULL;
-    struct itimerspec its;
-   // printf("\n Deleting value node from list\n");
 
     del = search_in_list(timerid,&prev);
-    printf("[%p] \n",timerid);
     if(del == NULL)
     {
         return -1;
@@ -135,22 +127,19 @@ int delete_from_list(timer_t *timerid)
         if(prev != NULL)
         {
             prev->next = del->next;
-           // printf("1\n");
         }
 
         if(del == curr)
         {
             curr = prev;
-          //  printf("2 \n");
         }
         else if(del == head)
         {
             head = del->next;
-           // printf("3\n");
         }
     }
-    free(del);
-    del = NULL;
+    //free(del);
+    //del = NULL;
 
     return 0;
 }
