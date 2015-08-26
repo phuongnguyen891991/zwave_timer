@@ -76,7 +76,7 @@ timer(timerid1 ,handler_func2,timming1 ,loop_times);
 //timer(timerid2 ,handler_func3,timming2 ,loop_times);
 //timer(timerid3 ,handler_func2,timming3 ,loop_times);
 print_list();
-///timer_cancel(timerid);
+timer_cancel(timerid);
 print_list();
 while(1)
 {

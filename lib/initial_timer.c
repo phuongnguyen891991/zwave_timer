@@ -106,7 +106,7 @@ void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_time
 
     struct linked_list *prevtmp = NULL;
     struct linked_list *deltmp = NULL;
-    printf("timer_cancel: [%p]",&timerid_cancel);
+    //printf("timer_cancel: [%p]",&timerid_cancel);
     deltmp = search_in_list(timerid_cancel,&prevtmp);
     {
       if (timer_delete (timerid_cancel) < 0)
@@ -116,14 +116,13 @@ void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_time
           }
     }
        ret_linked_list = delete_from_list(timerid_cancel) ;
-      /*      if(ret_linked_list != 0)
+            if(ret_linked_list != 0)
             {
                 printf("\n delete  failed, no such element found\n");
             }
             else
             {
-                printf("\n delete  [%p] passed \n",&timerid_cancel);
+                printf("\n delete passed \n");
             }
             lst = lst->next;
-      } */
   }
