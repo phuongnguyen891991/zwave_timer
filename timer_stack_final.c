@@ -34,27 +34,32 @@ timer_t * timerid1;
 timer_t * timerid2;
 timer_t * timerid3;
 
+int flag1,flag2,flag3;
  void * handler_func1()
 {
   printf("handler 1 signal is called \n");
-  /*timer_t tidptr1;
-  //tidptr1=si->si_value.sival_ptr;
-  printf("[%s] Caught signal %d\n",currTime("%T"),sig);
-  //printf("    sival_ptr = %p; ", si->si_value.sival_ptr);
-  printf("     *sigval_ptr = 0x%lx\n",(long)tidptr1);
- // printf(" overrun count = %d\n",timer_getoverrun(tidptr1)); */
   return (0);
 }
  void * handler_func2()
 {
+  flag2=0;
   printf("handler 2 signal is called \n");
+  if(flag2 == 0)
+  {
   timer_cancel(timerid);
+  flag2++;
+  }
   return (0);
 }
 void * handler_func3()
 {
+  flag3=0;
   printf("handler 3 signal is called \n");
-  timer_cancel(timerid1); 
+  if(flag3=0)
+  {
+  timer_cancel(timerid1);
+  flag3++;
+  }
   return (0);
 }
 
