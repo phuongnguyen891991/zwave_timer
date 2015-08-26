@@ -28,7 +28,7 @@ void * timerHandler(int sig, siginfo_t *si, void *uc)
     find_list_call_handler(*tidp);
     printf("\n");
 }
-int block_and_create_timer(int timming, struct linked_list * lst,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
+int block_and_create_timer(int *timming, struct linked_list * lst,int *loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
 {
 
   struct itimerspec its;
@@ -82,7 +82,7 @@ void init_timer(void)
    sigaddset(&mask, SIG);
 }
 
-void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
+void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_times)
 {
     //struct linked_list * lst;   
     lst = add_to_list(&timerid_input, handler,true);
@@ -101,21 +101,20 @@ void timer(timer_t * timerid_input, void(*handler), int timming, int loop_times)
 
  void timer_cancel(timer_t *timerid_cancel)
  {
-  init_timer();
+// init_timer();
   int ret_linked_list;
-  char quit;
-  
- // scanf("%s",&quit);
-  
-   // while(lst!=NULL)
-     // {
+
     struct linked_list *prevtmp = NULL;
     struct linked_list *deltmp = NULL;
+    printf("timer_cancel: [%p]",&timerid_cancel);
     deltmp = search_in_list(timerid_cancel,&prevtmp);
-   // {
-    //  timer(deltmp->timerid,0,NULL,0);
-   // }
-
+    {
+      if (timer_delete (timerid_cancel) < 0)
+          {
+              printf ("Error");
+              exit (EXIT_FAILURE);
+          }
+    }
        ret_linked_list = delete_from_list(timerid_cancel) ;
       /*      if(ret_linked_list != 0)
             {

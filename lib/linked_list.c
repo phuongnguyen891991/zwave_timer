@@ -145,11 +145,6 @@ int delete_from_list(timer_t *timerid)
         }
         else if(del == head)
         {
-         
-               its.it_value.tv_sec = 0;
-               its.it_value.tv_nsec = 0;
-               its.it_interval.tv_sec = 0;//its.it_value.tv_sec;
-               its.it_interval.tv_nsec = 0;   
             head = del->next;
            // printf("3\n");
         }

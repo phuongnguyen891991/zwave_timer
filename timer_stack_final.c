@@ -59,8 +59,8 @@ void * handler_func3()
 
 int main(int argc, char *argv[])
 {
- timerid = malloc(sizeof(timer_t));
- timerid1 = malloc(sizeof(timer_t));
+ timerid = calloc(1,sizeof(timer_t));
+ timerid1 = calloc(1,sizeof(timer_t));
 int loop_times = 5 ; 
 int loop_times1 = 3;
 int loop_times2 = 2;
@@ -76,11 +76,12 @@ timer(timerid1 ,handler_func2,timming1 ,loop_times);
 //timer(timerid2 ,handler_func3,timming2 ,loop_times);
 //timer(timerid3 ,handler_func2,timming3 ,loop_times);
 print_list();
-timer_cancel(timerid);
+///timer_cancel(timerid);
 print_list();
 while(1)
 {
 	pause();
 }//sleep(1);
+free(timerid);
 return 0;
 }
