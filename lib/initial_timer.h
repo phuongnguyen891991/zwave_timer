@@ -15,7 +15,7 @@
  //void print_siginfo(siginfo_t *si);
  void init_timer(void);
  void timer(timer_t * timerid,void (*handler), int *timming,int *loop_times);
- void timer_cancel(timer_t * timerid_cancel);
+ void timer_cancel(timer_t *timerid_cancel);
 
 
 #endif

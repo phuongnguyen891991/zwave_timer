@@ -34,7 +34,10 @@ timer_t * timerid1;
 timer_t * timerid2;
 timer_t * timerid3;
 
-int flag1,flag2,flag3;
+int flag1 = 0;
+int flag2 = 0;
+int flag3 = 0;
+int flag4 = 0;
  void * handler_func1()
 {
   printf("handler 1 signal is called \n");
@@ -42,9 +45,8 @@ int flag1,flag2,flag3;
 }
  void * handler_func2()
 {
-  flag2=0;
   printf("handler 2 signal is called \n");
-  if(flag2 == 0)
+  if(flag2 < 1)
   {
   timer_cancel(timerid);
   flag2++;
@@ -53,22 +55,31 @@ int flag1,flag2,flag3;
 }
 void * handler_func3()
 {
-  flag3=0;
   printf("handler 3 signal is called \n");
-  if(flag3=0)
+  if(flag3 < 1)
   {
   timer_cancel(timerid1);
   flag3++;
   }
   return (0);
 }
-
+void * handler_func4()
+{
+  printf("handler 4 signal is called \n");
+  if(flag4 < 1)
+  {
+  timer_cancel(timerid2);
+  flag4++;
+  }
+  return (0);
+}
 
 int main(int argc, char *argv[])
 {
  timerid = calloc(1,sizeof(timer_t));
  timerid1 = calloc(1,sizeof(timer_t));
  timerid2 = calloc(1,sizeof(timer_t));
+ timerid3 = calloc(1,sizeof(timer_t));
 int loop_times = 5 ; 
 int loop_times1 = 3;
 int loop_times2 = 2;
@@ -79,17 +90,17 @@ int timming2 = 4;
 int timming3 = 5;
 
 init_timer();
-timer(timerid,handler_func1,timming ,loop_times);
+timer(timerid  ,handler_func1,timming ,loop_times);
 timer(timerid1 ,handler_func2,timming1 ,loop_times);
 timer(timerid2 ,handler_func3,timming2 ,loop_times);
-//timer(timerid3 ,handler_func2,timming3 ,loop_times);
+timer(timerid3 ,handler_func4,timming3 ,loop_times);
 print_list();
 //timer_cancel(timerid);
 //print_list();
+//count_node();
 while(1)
 {
 	pause();
-}//sleep(1);
-free(timerid);
-return 0;
+}
+//return 0;
 }

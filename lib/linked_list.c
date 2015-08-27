@@ -51,35 +51,53 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 	}
 	return lst;
 }
-struct linked_list * search_in_list(timer_t * timerid,struct linked_list **prev)
+struct linked_list * search_in_list(timer_t *timerid)
 {
-    struct linked_list *ptr = head;
+    struct linked_list *lst = head;
+    timer_t * timer_compare;
+
+    while(lst != NULL)
+    {
+        timer_compare = lst->timerid;
+        if(timer_compare = timerid)
+        {
+           return lst;
+        }
+        else
+        {
+            return (0);
+        }
+        lst = lst->next;
+    }
+   /* struct linked_list *lst = head;
     struct linked_list *tmp = NULL;
+    timer_t *timer_temp;
     bool found = false;
 
-    while(ptr != NULL)
+    while(lst != NULL)
     {
-        if(ptr->timerid = timerid)
+        timer_temp = lst->timerid;
+        if(timer_temp == timerid)
         {
             found = true;
             break;
         }
         else
         {
-            tmp = ptr;
-            ptr = ptr->next;
+            tmp = lst;
+            lst = lst->next;
         }
     }
     if(true == found)
     {
         if(prev)
             *prev = tmp;
-        return ptr;
+        return lst;
     }
     else
     {
         return NULL;
-    }
+    }*/
 }
 
 void print_list(void)
@@ -117,7 +135,7 @@ int delete_from_list(timer_t *timerid)
     struct linked_list *prev = NULL;
     struct linked_list *del = NULL;
 
-    del = search_in_list(timerid,&prev);
+    del = search_in_list(timerid);
     if(del == NULL)
     {
         return -1;
@@ -139,7 +157,17 @@ int delete_from_list(timer_t *timerid)
         }
     }
     //free(del);
-    //del = NULL;
-
     return 0;
+}
+int count_node()
+{
+    struct linked_list * temp;
+     int i=0;
+     temp=head;
+     while(temp!=NULL)
+     {
+          i++;
+          temp=temp->next;
+     }
+     printf("\n\nnumber of nodes are %d  \n",i);
 }

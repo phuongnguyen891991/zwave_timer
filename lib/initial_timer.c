@@ -12,9 +12,10 @@
 #define errExit(msg)  do { perror(msg); exit(EXIT_FAILURE); } while (0)
 #define CLOCKID CLOCK_REALTIME
 #define SIG SIGRTMIN
-
+#define TRUE 1
+#define FALSE 0
 sigset_t mask;
-
+int check = true;
 struct sigevent  sev;
 struct linked_list * head_find = NULL;
 struct linked_list *lst;
@@ -85,7 +86,7 @@ void init_timer(void)
 void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_times)
 {
     //struct linked_list * lst;   
-    lst = add_to_list(&timerid_input, handler,true);
+    lst = add_to_list(timerid_input, handler,true);
    if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1)
        errExit("sigprocmask"); 
 
@@ -103,25 +104,32 @@ void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_time
  {
 
     int ret_linked_list;
+    timer_t timer_temp = NULL;
+    //struct timer_t *timer_compare;
+    struct linked_list * deltmp = NULL;
 
-    struct linked_list *prevtmp = NULL;
-    struct linked_list *deltmp = NULL;
-
-    deltmp = search_in_list(timerid_cancel,&prevtmp);
-    {
-      if (timer_delete (timerid_cancel) < 0)
+    //timer_compare = &timer_cancel;
+    deltmp = search_in_list(timerid_cancel);
+  //  if(deltmp != NULL)
+   // {    
+     timer_temp = deltmp->timerid;
+        if (timer_delete (timer_temp) < 0)
+            {
+                printf ("Error \n");
+                check = FALSE;
+            }
+        if(check == TRUE)
+        {
+          ret_linked_list = delete_from_list(timer_temp);
+          count_node();
+          if(ret_linked_list != 0)
           {
-              printf ("Error \n");
-
+              printf("\n delete  failed, no such element found\n");
           }
-    }
-       ret_linked_list = delete_from_list(timerid_cancel) ;
-            if(ret_linked_list != 0)
-            {
-                printf("\n delete  failed, no such element found\n");
-            }
-            else
-            {
-                printf("\n delete passed \n");
-            }
+          else
+          {
+              printf("\n delete passed \n");
+          }
+        }
+     //}
   }
