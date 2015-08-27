@@ -20,7 +20,7 @@ struct sigevent  sev;
 struct linked_list * head_find = NULL;
 struct linked_list *lst;
 
-void * timerHandler(int sig, siginfo_t *si, void *uc)
+void *timerHandler(int sig, siginfo_t *si, void *uc)
 {
     timer_t * tidp; 
     tidp = si->si_value.sival_ptr;
@@ -29,11 +29,11 @@ void * timerHandler(int sig, siginfo_t *si, void *uc)
     find_list_call_handler(*tidp);
     printf("\n");
 }
-int block_and_create_timer(int *timming, struct linked_list * lst,int *loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
+int block_and_create_timer(int timming, struct linked_list * lst,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
 {
 
   struct itimerspec its;
-  struct sigaction sa ;
+  //struct sigaction sa ;
   
   if((timer_create(CLOCK_REALTIME, &sev, &lst->timerid)) == -1)
         {
@@ -83,7 +83,7 @@ void init_timer(void)
    sigaddset(&mask, SIG);
 }
 
-void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_times)
+void timer(timer_t *timerid_input, void(*handler), int timming, int loop_times)
 {
     //struct linked_list * lst;   
     lst = add_to_list(timerid_input, handler,true);
@@ -103,26 +103,27 @@ void timer(timer_t * timerid_input, void(*handler), int *timming, int *loop_time
  void timer_cancel(timer_t *timerid_cancel)
  {
 
-    int ret_linked_list;
-    timer_t timer_temp = NULL;
+    struct linked_list *ret_linked_list;
+    timer_t timer_temp ;
     //struct timer_t *timer_compare;
     struct linked_list * deltmp = NULL;
+    struct linked_list *prev = NULL;
 
     //timer_compare = &timer_cancel;
-    deltmp = search_in_list(timerid_cancel);
+    deltmp = search_in_list(timerid_cancel,&prev);
   //  if(deltmp != NULL)
    // {    
      timer_temp = deltmp->timerid;
-        if (timer_delete (timer_temp) < 0)
+        if (timer_delete(timerid_cancel) < 0)
             {
                 printf ("Error \n");
                 check = FALSE;
             }
         if(check == TRUE)
         {
-          ret_linked_list = delete_from_list(timer_temp);
+          ret_linked_list = delete_from_list(timer_temp,&lst);
           count_node();
-          if(ret_linked_list != 0)
+          if(ret_linked_list = NULL)
           {
               printf("\n delete  failed, no such element found\n");
           }

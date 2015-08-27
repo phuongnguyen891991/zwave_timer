@@ -51,53 +51,37 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 	}
 	return lst;
 }
-struct linked_list * search_in_list(timer_t *timerid)
+struct linked_list *search_in_list(timer_t *timerid,struct linked_list **prev)
 {
-    struct linked_list *lst = head;
-    timer_t * timer_compare;
-
-    while(lst != NULL)
-    {
-        timer_compare = lst->timerid;
-        if(timer_compare = timerid)
-        {
-           return lst;
-        }
-        else
-        {
-            return (0);
-        }
-        lst = lst->next;
-    }
-   /* struct linked_list *lst = head;
-    struct linked_list *tmp = NULL;
+    struct linked_list *ptr = head;
+    struct linked_list* tmp = (struct linked_list*)malloc(sizeof(struct linked_list));
     timer_t *timer_temp;
     bool found = false;
 
-    while(lst != NULL)
+    while(ptr != NULL)
     {
-        timer_temp = lst->timerid;
-        if(timer_temp == timerid)
+        timer_temp = ptr->timerid;
+        if(timer_temp = timerid)
         {
             found = true;
             break;
         }
         else
         {
-            tmp = lst;
-            lst = lst->next;
+            tmp = ptr;
+            ptr = ptr->next;
         }
     }
     if(true == found)
     {
         if(prev)
             *prev = tmp;
-        return lst;
+        return ptr;
     }
     else
     {
         return NULL;
-    }*/
+    }
 }
 
 void print_list(void)
@@ -130,34 +114,35 @@ void find_list_call_handler(timer_t *timerid)
     }
 }
 
-int delete_from_list(timer_t *timerid)
+struct linked_list *delete_from_list(timer_t *timerid,struct linked_list *first)
 {
-    struct linked_list *prev = NULL;
-    struct linked_list *del = NULL;
-
-    del = search_in_list(timerid);
-    if(del == NULL)
+struct linked_list *prev=NULL;
+  struct linked_list *root = first;
+  while (root != NULL)
+  {
+    if (root->timerid == timerid)
     {
-        return -1;
+      if (prev != NULL && root->next != NULL) //middle elements
+      {
+        prev->next = root->next;
+        free(root);
+      }
+      else if (prev == NULL) //first element
+      {
+        free(first);
+        first = root->next;
+        root = root->next;
+      }
+      else if (root->next == NULL) //last element
+      {
+        prev->next = NULL;
+        free(root);
+      }
     }
-    else
-    {
-        if(prev != NULL)
-        {
-            prev->next = del->next;
-        }
-
-        if(del == curr)
-        {
-            curr = prev;
-        }
-        else if(del == head)
-        {
-            head = del->next;
-        }
-    }
-    //free(del);
-    return 0;
+    prev = root;
+    root = root->next;
+  }
+  return first;
 }
 int count_node()
 {
