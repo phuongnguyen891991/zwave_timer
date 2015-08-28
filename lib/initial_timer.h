@@ -14,8 +14,8 @@
  //int block_and_create_timer(int timming, struct linked_list * lst,int i,int loop_times);
  //void print_siginfo(siginfo_t *si);
  void init_timer(void);
- void timer(timer_t *timerid,void (*handler), int timming,int loop_times);
- void timer_cancel(timer_t *timerid_cancel);
+ void timer(timer_t timerid,void (*handler), int timming,int loop_times);
+ void timer_cancel(timer_t *timerid);
 
 
 #endif

@@ -20,12 +20,12 @@ struct sigevent  sev;
 struct linked_list * head_find = NULL;
 struct linked_list *lst;
 
-void *timerHandler(int sig, siginfo_t *si, void *uc)
+void timerHandler(int sig, siginfo_t *si, void *uc)
 {
     timer_t * tidp; 
     tidp = si->si_value.sival_ptr;
 
-    printf("[%s] tidp [%p]\n",currTime("%T"),(long)*tidp);
+    printf("[%s] tidp [0x%lx]\n",currTime("%T"),(long)*tidp);
     find_list_call_handler(*tidp);
     printf("\n");
 }
@@ -33,7 +33,6 @@ int block_and_create_timer(int timming, struct linked_list * lst,int loop_times)
 {
 
   struct itimerspec its;
-  //struct sigaction sa ;
   
   if((timer_create(CLOCK_REALTIME, &sev, &lst->timerid)) == -1)
         {
@@ -83,9 +82,10 @@ void init_timer(void)
    sigaddset(&mask, SIG);
 }
 
-void timer(timer_t *timerid_input, void(*handler), int timming, int loop_times)
+void timer(timer_t timerid_input, void(*handler), int timming, int loop_times)
 {
-    //struct linked_list * lst;   
+    //struct linked_list * lst;  
+    printf("timer in 'timer' function: [0x%lx] \n",(long)timerid_input); 
     lst = add_to_list(timerid_input, handler,true);
    if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1)
        errExit("sigprocmask"); 
@@ -102,28 +102,43 @@ void timer(timer_t *timerid_input, void(*handler), int timming, int loop_times)
 
  void timer_cancel(timer_t *timerid_cancel)
  {
-
     struct linked_list *ret_linked_list;
-    timer_t timer_temp ;
-    //struct timer_t *timer_compare;
+    timer_t *timer_temp ;
+    timer_t *timer_compare;
     struct linked_list * deltmp = NULL;
-    struct linked_list *prev = NULL;
+    //struct linked_list *prev = NULL;
 
+    timer_t * tidp; 
+    tidp = timerid_cancel;
     //timer_compare = &timer_cancel;
-    deltmp = search_in_list(timerid_cancel,&prev);
+    //printf("[%p] \n",tidp);
+
+    //deltmp = search_in_list(*tidp);
+    //print_list();
+    while(lst != NULL)
+        {
+          timer_compare = lst->timerid;
+          if(timer_compare == tidp)
+          {
+            deltmp = lst;
+          }
+          lst = lst->next;
+        }
   //  if(deltmp != NULL)
    // {    
      timer_temp = deltmp->timerid;
-        if (timer_delete(timerid_cancel) < 0)
+     printf("2 \n");
+        if (timer_delete(timer_temp) < 0)
             {
                 printf ("Error \n");
                 check = FALSE;
             }
+     printf("3\n");       
         if(check == TRUE)
         {
-          ret_linked_list = delete_from_list(timer_temp,&lst);
+          ret_linked_list = delete_from_list(timer_temp,lst);
           count_node();
-          if(ret_linked_list = NULL)
+          if(ret_linked_list == NULL)
           {
               printf("\n delete  failed, no such element found\n");
           }

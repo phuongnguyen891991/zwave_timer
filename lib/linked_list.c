@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <stdbool.h>
 #include <signal.h>
 #include <time.h>
@@ -8,7 +9,7 @@
 struct linked_list * head = NULL;
 struct linked_list * curr = NULL;
 
-struct linked_list * create_list(timer_t * timerid , void (*handler))
+struct linked_list * create_list(timer_t timerid , void (*handler))
 {
 	struct linked_list * lst = (struct  linked_list*)malloc(sizeof(struct linked_list));
 	if(lst == NULL)
@@ -23,20 +24,21 @@ struct linked_list * create_list(timer_t * timerid , void (*handler))
 	return lst;
 }
 
-struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_end)
+struct linked_list * add_to_list(timer_t timerid,void (*handler),bool ad_to_end)
 {
 	if(head == NULL)
 	{
 		return(create_list(timerid,handler));
 	}
 
-	struct linked_list * lst = (struct  linked_list*)malloc(sizeof(struct linked_list));
+	struct linked_list *lst = (struct  linked_list*)malloc(sizeof(struct linked_list));
 	if(lst == NULL)
 	{
 		printf("\n node create fail \n");
 		return NULL;
 	}
 	lst->timerid  = timerid;
+    printf("timer in add_to_list function: [0x%lx] \n",(long)lst->timerid);
 	lst->handler = handler;
 	lst->next = NULL;
 	if(ad_to_end)
@@ -51,31 +53,31 @@ struct linked_list * add_to_list(timer_t * timerid,void (*handler),bool ad_to_en
 	}
 	return lst;
 }
-struct linked_list *search_in_list(timer_t *timerid,struct linked_list **prev)
+struct linked_list * search_in_list(timer_t *timerid)
 {
     struct linked_list *ptr = head;
-    struct linked_list* tmp = (struct linked_list*)malloc(sizeof(struct linked_list));
+    //struct linked_list *tmp = (struct linked_list*)malloc(sizeof(struct linked_list));
     timer_t *timer_temp;
     bool found = false;
 
     while(ptr != NULL)
     {
         timer_temp = ptr->timerid;
-        if(timer_temp = timerid)
+        if(timer_temp == timerid)
         {
             found = true;
             break;
         }
         else
         {
-            tmp = ptr;
+          //  tmp = ptr;
             ptr = ptr->next;
         }
     }
     if(true == found)
     {
-        if(prev)
-            *prev = tmp;
+       // if(prev)
+         //   *prev = tmp;
         return ptr;
     }
     else
@@ -91,7 +93,7 @@ void print_list(void)
     printf("\n -------Printing list Start------- \n");
     while(lst != NULL)
     {
-        printf("\nTimer [%p]  -- [%p] --[%p] --[..]",lst->timerid,lst->handler,lst->next);
+        printf("\nTimer [0x%lx]  -- [0x%lx] --[0x%lx] --[..]",(long)lst->timerid,(long)lst->handler,(long)lst->next);
         lst = lst->next;
     }
     printf("\n -------Printing list End------- \n");
@@ -108,6 +110,7 @@ void find_list_call_handler(timer_t *timerid)
     	timer_compare = lst->timerid;
     	if(timer_compare == timerid)
     	{
+        printf("[0x%lx]\n",(long)lst->timerid);
     		lst->handler();
     	}
         lst = lst->next;
@@ -155,4 +158,5 @@ int count_node()
           temp=temp->next;
      }
      printf("\n\nnumber of nodes are %d  \n",i);
+     return 0;
 }
