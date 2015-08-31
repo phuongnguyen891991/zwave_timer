@@ -29,8 +29,8 @@
 //struct linked_list * head_start = NULL;
 
 //struct linked_list *lst ;
- timer_t  timerid;
- timer_t timerid1;
+ static timer_t timerid;
+ static timer_t timerid1;
 //static timer_t  timerid2;
 //static timer_t  timerid3;
 
@@ -39,24 +39,24 @@ int flag2 = 0;
 int flag3 = 0;
 int flag4 = 0;
 
-void * handler_func1()
+void * handler_func1(timer_t timerid)
 {
   printf("handler 1 signal is called \n");
   return (0);
 }
-void * handler_func2()
+void * handler_func2(timer_t timerid)
 {
   printf("handler 2 signal is called \n");
   if(flag2 < 1)
   {
   printf("[0x%lx] \n",(long)timerid);
-  timer_cancel(&timerid);
+  timer_cancel(timerid);
   flag2++;
   }
   return (0);
 }
 
-void * handler_func3()
+void * handler_func3(timer_t * timerid)
 {
   printf("handler 3 signal is called \n");
   if(flag3 < 1)

@@ -111,7 +111,7 @@ void find_list_call_handler(timer_t *timerid)
     	if(timer_compare == timerid)
     	{
         printf("[0x%lx]\n",(long)lst->timerid);
-    		lst->handler();
+    		lst->handler(timerid);
     	}
         lst = lst->next;
     }

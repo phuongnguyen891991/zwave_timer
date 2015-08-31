@@ -27,7 +27,7 @@ void timerHandler(int sig, siginfo_t *si, void *uc)
 
     printf("[%s] tidp [0x%lx]\n",currTime("%T"),(long)*tidp);
     find_list_call_handler(*tidp);
-    printf("\n");
+   // printf("\n");
 }
 int block_and_create_timer(int timming, struct linked_list * lst,int loop_times)//struct sigaction sa, sigset_t mask,void (*handler))
 {
@@ -110,6 +110,7 @@ void timer(timer_t timerid_input, void(*handler), int timming, int loop_times)
 
     timer_t * tidp; 
     tidp = timerid_cancel;
+
     //timer_compare = &timer_cancel;
     //printf("[%p] \n",tidp);
 
@@ -127,18 +128,18 @@ void timer(timer_t timerid_input, void(*handler), int timming, int loop_times)
   //  if(deltmp != NULL)
    // {    
      timer_temp = deltmp->timerid;
-     printf("2 \n");
+   //  printf("2 \n");
         if (timer_delete(timer_temp) < 0)
             {
                 printf ("Error \n");
                 check = FALSE;
             }
-     printf("3\n");       
+   //  printf("3\n");       
         if(check == TRUE)
         {
           ret_linked_list = delete_from_list(timer_temp,lst);
           count_node();
-          if(ret_linked_list == NULL)
+          if(ret_linked_list != NULL)
           {
               printf("\n delete  failed, no such element found\n");
           }
